@@ -7,7 +7,12 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+/*window.Vue = require('vue');*/
+
+window.PNotify = require('pnotify');
+PNotify.prototype.options.styling = "bootstrap3";
+
+window.app = require('./_application');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -15,8 +20,8 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example', require('./components/Example.vue'));
+/*Vue.component('example', require('./components/Example.vue'));*/
 
-const app = new Vue({
+/*const app = new Vue({
     el: '#app'
-});
+});*/

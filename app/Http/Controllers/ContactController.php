@@ -3,21 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Contact;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ContactController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
+     * @param User $user
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
 
-        $contacts = Contact::all();
+        $user = Auth::user();
 
-        return view('contacts.index',compact('contacts'));
+        $latestContacts = $user->contacts()
+            ->orderBy('created_at','desc')->take(5)->get();
+
+        $contacts = $user->contacts()
+            ->orderBy('name','asc')->get();
+
+        return view('contacts.index',compact('contacts','latestContacts'));
     }
 
     /**
@@ -38,7 +46,12 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        $result = Contact::create($request->all());
+        $this->validate($request,[
+            'name'=>'required|string',
+            'phone'=>'numeric',
+        ]);
+
+        $result = Auth::user()->contacts()->create($request->all());
 
         return response()->json($result);
     }
@@ -51,6 +64,8 @@ class ContactController extends Controller
      */
     public function show(Contact $contact)
     {
+        $this->authorize('manage',$contact);
+
         return view('contacts.show',compact('contact'));
     }
 
@@ -62,6 +77,8 @@ class ContactController extends Controller
      */
     public function edit(Contact $contact)
     {
+        $this->authorize('manage',$contact);
+
         return view('contacts.edit',compact('contact'));
     }
 
@@ -74,6 +91,13 @@ class ContactController extends Controller
      */
     public function update(Request $request, Contact $contact)
     {
+        $this->authorize('manage',$contact);
+
+        $this->validate($request,[
+            'name'=>'required|string',
+            'phone'=>'numeric',
+        ]);
+
         $result = $contact->update($request->all());
 
         return response()->json($result);
@@ -87,6 +111,8 @@ class ContactController extends Controller
      */
     public function destroy(Contact $contact)
     {
+
+        $this->authorize('manage',$contact);
 
         $result = $contact->delete();
 
