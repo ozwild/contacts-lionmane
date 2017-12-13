@@ -52,10 +52,10 @@
                             Actions <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a href="#" data-ref="{{ route('show', $contact->id) }}">View</a></li>
-                            <li><a href="#" data-ref="{{ route('edit', $contact->id) }}">Edit</a></li>
+                            <li><a href="#" class="show-button"  data-ref="{{ route('show', $contact->id) }}">View</a></li>
+                            <li><a href="#" class="edit-button" data-ref="{{ route('edit', $contact->id) }}">Edit</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#" data-ref="{{ route('delete', $contact->id) }}" class="text-danger">Delete</a></li>
+                            <li><a href="#" class="delete-button" data-ref="{{ route('delete', $contact->id) }}" class="text-danger">Delete</a></li>
                         </ul>
                     </div>
                 </td>

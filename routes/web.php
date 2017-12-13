@@ -19,21 +19,38 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('show/{contact}', 'ContactController@show')->name('show');
 
-Route::get('index', 'ContactController@index')->name('index');
+/**
+ * Contact routes
+ */
+Route::group(['prefix'=>'contacts'], function(){
 
-Route::get('create', 'ContactController@create')->name('create');
+    Route::get('show/{contact}', 'ContactController@show')->name('show');
 
-Route::get('edit/{contact}', 'ContactController@edit')->name('edit');
+    Route::get('index', 'ContactController@index')->name('index');
 
-Route::group(['prefix'=>'webapi'],function(){
+    Route::get('create', 'ContactController@create')->name('create');
+
+    Route::get('edit/{contact}', 'ContactController@edit')->name('edit');
+
+    Route::group(['prefix'=>'webapi'],function(){
 
 
-  Route::post('store','ContactController@store')->name('store');
+        Route::post('store','ContactController@store')->name('store');
 
-  Route::patch('update/{contact}','ContactController@update')->name('update');
+        Route::patch('update/{contact}','ContactController@update')->name('update');
 
-  Route::delete('destroy/{contact}', 'ContactController@destroy')->name('delete');
+        Route::delete('destroy/{contact}', 'ContactController@destroy')->name('delete');
+
+    });
+
+});
+
+/**
+ * Attribute routes
+ */
+Route::group(['prefix'=>'attributes'], function(){
+
+    Route::get('create', 'AttributeController@create')->name('attribute-create');
 
 });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AttributeType;
 use App\Contact;
 use App\User;
 use Illuminate\Http\Request;
@@ -35,7 +36,9 @@ class ContactController extends Controller
      */
     public function create()
     {
-        return view('contacts.create');
+        $types = AttributeType::orderBy('name','asc')->get();
+
+        return view('contacts.create', compact('types'));
     }
 
     /**
@@ -47,13 +50,16 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            'name'=>'required|string',
+            'name'=>'required|string|unique:contacts,name',
             'phone'=>'numeric',
         ]);
 
-        $result = Auth::user()->contacts()->create($request->all());
+        if($contact = Auth::user()->contacts()->create($request->all())){
+            $attributes = (new AttributeController())->store($request, $contact);
+            return response()->json($contact->with('attributes'));
+        }
 
-        return response()->json($result);
+        return response()->json("Could not store",400);
     }
 
     /**
@@ -66,7 +72,9 @@ class ContactController extends Controller
     {
         $this->authorize('manage',$contact);
 
-        return view('contacts.show',compact('contact'));
+        $attributes = $contact->attributes()->with('type')->get();
+
+        return view('contacts.show',compact('contact','attributes'));
     }
 
     /**
@@ -79,7 +87,11 @@ class ContactController extends Controller
     {
         $this->authorize('manage',$contact);
 
-        return view('contacts.edit',compact('contact'));
+        $types = AttributeType::orderBy('name','asc')->get();
+
+        $attributes = $contact->attributes;
+
+        return view('contacts.edit',compact('contact','attributes','types'));
     }
 
     /**
@@ -98,9 +110,16 @@ class ContactController extends Controller
             'phone'=>'numeric',
         ]);
 
-        $result = $contact->update($request->all());
+        if($contact->update($request->all())){
+            $attributes = (new AttributeController())->store($request, $contact);
+            return response()->json($contact->with('attributes'));
+        }
 
-        return response()->json($result);
+        return response()->json("Could not store",400);
+
+        /*$result = $contact->update($request->all());
+
+        return response()->json($result);*/
     }
 
     /**

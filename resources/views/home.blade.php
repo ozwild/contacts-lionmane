@@ -21,7 +21,7 @@
     <main style="display:none;">
         <div class="container">
             <div class="row">
-                <div class="clearfix">
+                <div class="col-xs-12 clearfix" style="margin-bottom: 0.5em;">
                     <a href="#" class="btn btn-success pull-right add-contact">Add New</a>
                 </div>
             </div>
@@ -51,6 +51,7 @@
             list: '{{ route('index') }}',
             create: '{{ route('create') }}',
             store: '{{ route('store') }}',
+            attributeGroup: '{{ route('attribute-create') }}'
         };
 
         $.when(app.initialize()).then(function () {

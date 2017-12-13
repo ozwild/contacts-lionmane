@@ -14,4 +14,8 @@ class Contact extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function attributes(){
+        return $this->hasMany('App\Attribute');
+    }
+
 }
